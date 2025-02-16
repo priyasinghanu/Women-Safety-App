@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SOS Emergency Alert</title>
+  <style>
+    /* Simple button styling */
+    #send-sos {
+      background: #ff4081;
+      color: white;
+      font-size: 1.2em;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    #send-sos:hover {
+      background: #e23670;
+    }
+  </style>
+</head>
+<body>
+  <h1>SOS Emergency Alert</h1>
+  <p>Press the button below to send your current location to your emergency contact.</p>
+  <button id="send-sos">Send SOS Alert</button>
+
+  <script>
+    // Reference to the SOS button
+    const sendSOSBtn = document.getElementById('send-sos');
+
+    // When the user clicks the SOS button…
+    sendSOSBtn.addEventListener('click', function() {
+      if (navigator.geolocation) {
+        // Request the current position with high accuracy
+        navigator.geolocation.getCurrentPosition(successCallback, errorCallback, { enableHighAccuracy: true });
+      } else {
+        alert("Geolocation is not supported by your browser.");
+      }
+    });
+
+    // Called when location is successfully obtained
+    function successCallback(position) {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+      const timestamp = position.timestamp;
+
+      // Prepare the data to be sent to your server
+      const data = {
+        latitude: latitude,
+        longitude: longitude,
+        timestamp: timestamp
+      };
+
+      console.log("SOS Alert: ", data); // For debugging
+
+      // Send the coordinates to your server endpoint via a POST request.
+      // Replace the URL with your server endpoint.
+      fetch('https://yourserver.com/api/sendSOS', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Server response wasn't OK");
+        }
+        return response.json();
+      })
+      .then(result => {
+        // You might display a confirmation to the user here
+        alert("SOS Alert sent successfully!");
+        console.log("Server response:", result);
+      })
+      .catch(error => {
+        alert("Error sending SOS Alert: " + error.message);
+        console.error("Error:", error);
+      });
+    }
+
+    // Called if there's an error getting the location
+    function errorCallback(error) {
+      alert("Unable to retrieve your location: " + error.message);
+      console.error("Geolocation error:", error);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Emergency Siren</title>
+  <style>
+    /* Clickable Siren Div */
+    #siren-btn {
+      cursor: pointer;
+      padding: 20px;
+      background: #ff4081;
+      color: white;
+      text-align: center;
+      font-size: 1.5em;
+      border-radius: 10px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      width: 200px;
+      margin: 40px auto;
+    }
+    #siren-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Modal Overlay */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    
+    /* Modal Content */
+    .modal {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 300px;
+      text-align: center;
+      position: relative;
+    }
+    
+    /* Close Button */
+    .modal .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+    
+    /* Modal Buttons */
+    .modal button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Clickable Siren Div -->
+  <div id="siren-btn">🚨 Loud Siren</div>
+  
+  <!-- Modal Pop-up -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+      <div class="close-btn" id="close-btn">&times;</div>
+      <h2>Emergency Siren</h2>
+      <p>Activate the siren during emergencies.</p>
+      <button id="start-btn">Start Siren</button>
+      <button id="stop-btn">Stop Siren</button>
+    </div>
+  </div>
+  
+  <!-- Hidden Audio Element (set to loop) -->
+  <audio id="siren-audio" src="./resources/siren.wav" loop></audio>
+  
+  <script>
+    // Get references to elements
+    const sirenBtn = document.getElementById('siren-btn');
+    const modalOverlay = document.getElementById('modal-overlay');
+    const closeBtn = document.getElementById('close-btn');
+    const startBtn = document.getElementById('start-btn');
+    const stopBtn = document.getElementById('stop-btn');
+    const sirenAudio = document.getElementById('siren-audio');
+    
+    // Show the modal pop-up
+    function showModal() {
+      modalOverlay.style.display = 'flex';
+    }
+    
+    // Hide the modal and stop the siren if playing
+    function hideModal() {
+      modalOverlay.style.display = 'none';
+      sirenAudio.pause();
+      sirenAudio.currentTime = 0;
+    }
+    
+    // Event listeners
+    sirenBtn.addEventListener('click', showModal);
+    closeBtn.addEventListener('click', hideModal);
+    
+    // Close the modal if clicking outside the modal content
+    modalOverlay.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) {
+        hideModal();
+      }
+    });
+    
+    // Start and Stop functionality
+    startBtn.addEventListener('click', () => {
+      // Start the siren sound (it will loop until stopped)
+      sirenAudio.play();
+    });
+    
+    stopBtn.addEventListener('click', () => {
+      sirenAudio.pause();
+      sirenAudio.currentTime = 0;
+    });
+  </script>
+</body>
+</html>

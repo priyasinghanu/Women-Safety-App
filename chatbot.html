@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SAKHI Chatbot - Streaming & Formatted Responses</title>
+  <script type="importmap">
+    {
+      "imports": {
+        "@google/generative-ai": "https://esm.run/@google/generative-ai"
+      }
+    }
+  </script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #ff758c, #ff7eb3);
+    }
+    .chat-container {
+      width: 700px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      overflow: hidden;
+    }
+    .chat-header {
+      background: #ff4d6d;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+      font-size: 22px;
+      font-weight: bold;
+      /* Headline in a distinct color with a slight gradient effect */
+      background: linear-gradient(45deg, #ff4d6d, #ff758c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .chat-box {
+      height: 400px;
+      overflow-y: auto;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .message {
+      padding: 10px;
+      border-radius: 10px;
+      max-width: 75%;
+      word-wrap: break-word;
+      line-height: 1.5;
+    }
+    .user-message {
+      background: #ff758c;
+      color: #fff;
+      align-self: flex-end;
+    }
+    .bot-message {
+      background: #f1f1f1;
+      color: #333;
+      align-self: flex-start;
+    }
+    /* Ensure paragraphs inside messages have extra spacing */
+    .bot-message p, .user-message p {
+      margin: 10px 0;
+    }
+    .bot-message strong {
+      color: #ff4d6d;
+    }
+    .bot-message em {
+      color: #555;
+      font-style: italic;
+    }
+    .bot-message code {
+      background: #eee;
+      padding: 2px 4px;
+      border-radius: 4px;
+      font-family: Consolas, monospace;
+    }
+    .highlight {
+      background-color: yellow;
+      font-weight: bold;
+    }
+
+    .chat-input {
+      display: flex;
+      padding: 10px;
+      background: white;
+      border-top: 1px solid #ddd;
+    }
+    input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      outline: none;
+      font-size: 16px;
+      border-radius: 25px;
+      background: #f5f5f5;
+    }
+    .send-btn {
+      background: linear-gradient(135deg, #ff758c, #ff4d6d);
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 50%;
+      margin-left: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .send-btn:hover {
+      background: linear-gradient(135deg, #ff4d6d, #ff758c);
+      transform: scale(1.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="chat-header">SAKHI Chatbot</div>
+    <div class="chat-box" id="chat-box"></div>
+    <div class="chat-input">
+      <input type="text" id="inputText" placeholder="Type your message..." />
+      <button id="submitBtn" class="send-btn">➤</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { GoogleGenerativeAI } from "@google/generative-ai";
+
+    const inputText = document.querySelector("#inputText");
+    const submitBtn = document.querySelector("#submitBtn");
+    const chatBox = document.querySelector("#chat-box");
+
+    // Replace with your own API key
+    const API_KEY = "AIzaSyCbBHcJHeSbY6ctJ2sNeKTKisLxjQa5-UY";
+    const genAI = new GoogleGenerativeAI(API_KEY);
+
+    submitBtn.addEventListener("click", () => {
+      sendMessage();
+    });
+
+    inputText.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();  // Prevents the default form submission if any.
+      sendMessage();
+    }
+  });
+
+    // Formatting function: adds markdown styling and handles paragraphs/line breaks.
+    function formatText(text) {
+      // Split on two or more newlines to form paragraphs and wrap in <p> tags.
+      const paragraphs = text.split(/\n{2,}/g).map(para => {
+        // Convert single newlines to <br> tags.
+        para = para.replace(/\n/g, "<br>");
+        return `<p>${para}</p>`;
+      });
+      text = paragraphs.join("");
+      // Bold: **text** → <strong>text</strong>
+      text = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+      // Italic: _text_ → <em>$1</em>
+      text = text.replace(/_(.*?)_/g, "<em>$1</em>");
+      // Inline code: `code` → <code>code</code>
+      text = text.replace(/`(.*?)`/g, "<code>$1</code>");
+      // Highlight: [mark]text[/mark] → <span class="highlight">text</span>
+      text = text.replace(/\[mark\](.*?)\[\/mark\]/g, '<span class="highlight">$1</span>');
+      return text;
+    }
+
+    async function sendMessage() {
+      const userMessage = inputText.value.trim();
+      if (!userMessage) return;
+
+      // Display the user's message.
+      chatBox.innerHTML += `<div class="message user-message">${userMessage}</div>`;
+      inputText.value = "";
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      // Create a placeholder element for the bot's streaming response.
+      const botMsgElem = document.createElement("div");
+      botMsgElem.className = "message bot-message";
+      botMsgElem.innerHTML = "";
+      chatBox.appendChild(botMsgElem);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      // Initialize the model with a system instruction to assign the desired role.
+      const model = genAI.getGenerativeModel({
+        model: "gemini-1.5-flash",
+        systemInstruction: "You are a compassionate and knowledgeable women helping chatbot. Your role is to offer empathetic advice, safety tips, legal awareness, and direct actionable responses to assist women in crisis situations.",
+      });
+
+      try {
+        // Call the streaming function; result.stream is an async iterator.
+        const streamResponse = await model.generateContentStream(userMessage);
+        let aggregatedText = "";
+        // Iterate over streaming chunks as they arrive.
+        for await (const chunk of streamResponse.stream) {
+          const token = chunk.text();
+          aggregatedText += token;
+          // Format the aggregated text (which now contains paragraphs, bold, italics, etc.)
+          const formatted = formatText(aggregatedText);
+          botMsgElem.innerHTML = formatted;
+          chatBox.scrollTop = chatBox.scrollHeight;
+        }
+      } catch (error) {
+        console.error("Error fetching streaming response:", error);
+        botMsgElem.innerHTML = "<p>Sorry, I couldn't process your request.</p>";
+      }
+    }
+  </script>
+</body>
+</html>

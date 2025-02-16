@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        body {
+            display: flex;
+            height: 100vh;
+            align-items: center;
+            justify-content: center;
+            background-color: #f4f4f4;
+        }
+        .container {
+            display: flex;
+            width: 900px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        .left-panel {
+            flex: 1;
+            padding: 50px;
+        }
+        .left-panel h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        .left-panel input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .left-panel .checkbox-container {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+        }
+        .left-panel button {
+            width: 100%;
+            padding: 12px;
+            background: #6a0dad;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .left-panel button:hover {
+            background: #570ba0;
+        }
+        .google-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            margin-top: 10px;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .google-btn img {
+            width: 20px;
+            margin-right: 10px;
+        }
+        .right-panel {
+            flex: 1;
+            background: #c3a2ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .illustration {
+            width: 80%;
+        }
+        .signup-link {
+            text-align: center;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .signup-link a {
+            color: #6a0dad;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <h2>Welcome To AI Chatboot</h2>
+            <p>Please enter your details</p>
+            <!-- <input type="email" placeholder="Email address"> -->
+            <input type="text" id="emailOrPhone" name="emailOrPhone" placeholder="Enter email or phone" 
+            pattern="^(\d{10}|\w+@\w+\.\w{2,})$" required>
+            <input type="password" placeholder="Password">
+            <div class="checkbox-container">
+                <!-- <label><input type="checkbox"> Remember for 30 days</label> -->
+                <a href="sentOtp.html">Forgot password?</a>
+            </div>
+            <button>Sign in</button>
+            <div class="google-btn">
+                <img src="./resources/googlelogo.webp" alt="Google Logo">
+                Sign in with Google
+            </div>
+            <div class="signup-link">Don’t have an account? <a href="sinup.html">Sign up</a></div>
+        </div>
+        <div class="right-panel">
+            <img class="illustration" src="./resources/loginpageimage.webp" alt="Illustration" height="400px" width="400px">
+        </div>
+    </div>
+</body>
+</html>

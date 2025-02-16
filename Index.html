@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Women’s Safety & Wellness Hub</title>
+    <link rel="stylesheet" href="siren.css" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        background: #f9f9f9;
+      }
+      nav {
+        background: #ff4081;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .nav-links {
+        list-style: none;
+        padding: 0;
+        display: flex;
+      }
+      .nav-links li {
+        margin: 0 10px;
+      }
+      .nav-links a {
+        text-decoration: none;
+        color: white;
+        font-weight: bold;
+      }
+      .login-btn {
+        background: rgb(21, 3, 135);
+        padding: 8px 15px;
+        border-radius: 5px;
+        font-weight: bold;
+      }
+      .hero {
+        padding: 20px 20px 40px 20px;
+        background: linear-gradient(to right, #ff758c, #ff7eb3);
+        color: white;
+      }
+      .hero h1 {
+        font-size: 2.5em;
+      }
+      .hero p {
+        font-size: 1.2em;
+        margin-bottom: 20px;
+      }
+      .chatbot-btn {
+        background: white;
+        color: #ff4081;
+        padding: 12px 25px;
+        font-size: 1.2em;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+      }
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        padding: 50px;
+        max-width: 1200px;
+        margin: auto;
+      }
+      .feature-card {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: box-shadow 0.2s ease;
+        text-decoration: none; 
+        color: inherit; 
+      }
+      .feature-card:hover {
+        box-shadow: 0 8px 16px rgba(255, 1, 204, 0.2);
+      }
+
+      footer {
+        background: #333;
+        color: white;
+        padding: 20px;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <img
+          src="./resources/mainLogo.webp"
+          alt=""
+          height="50px"
+          width="50px"
+        />
+        <!-- <h3>Women’s Safety & Wellness Hub</h3> -->
+        <ul class="nav-links">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#features">About Us</a></li>
+          <li><a href="#chatbot">Contact Us</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#blog">Blog</a></li>
+          <li><a href="./loginPage.html" class="login-btn">Login</a></li>
+          <li><a href="./sinup.html" class="login-btn">Sign Up</a></li>
+        </ul>
+      </nav>
+    </header>
+    <section id="home" class="hero restricted-card">
+      <h1>Empowering Women with AI-Driven Safety & Health Solutions</h1>
+      <p>Your trusted companion for safety, health, and legal empowerment.</p>
+      <a href="./chatbot.html" class="chatbot-btn">Talk to AI Chatbot</a>
+    </section>
+
+    <section class="features-grid" id="features">
+      <div class="feature-card" id="siren-btn">
+        🔊 <b>Loud Siren</b><br />
+        Triggers an alarm sound in emergencies.
+      </div>
+        <a href="sos.html" class="feature-card restricted-card">
+        🚨 <b>SOS Emergency Alert</b><br />
+        Sends location & alert to contacts.
+        </a>
+      <a  href="tracker.html" class="feature-card restricted-card">
+        📅 <b>Tracker</b><br />
+        Predict your next cycle & symptoms.
+      </a >
+      <a href="" class="feature-card restricted-card">
+        😊 <b>Mood & Journal</b><br />
+        Log emotions and write journals.
+      </a>
+      <a href="" class="feature-card">
+        🤰 <b>Pregnancy Guide</b><br />
+        Weekly health tips for pregnant women.
+      </a>
+      <a href="" class="feature-card">
+        🥗 <b>Nutrition & Fitness</b><br />
+        Suggests diet & workouts.
+      </a>
+      <a href="" class="feature-card">
+        ⚖️ <b>Legal Awareness</b><br />
+        Know your rights & legal help.
+      </a>
+      <a href="" class="feature-card">
+        🏥 <b>Find Help</b><br />
+        Locate hospitals & police stations.
+      </a>
+      <a  class="feature-card">
+        🥋 <b>Self-Defense Tutor</b><br />
+        Learn techniques for safety.
+      </a>
+      
+      
+    </section>
+
+    <!-- Modal Pop-up -->
+    <div class="modal-overlay" id="modal-overlay">
+      <div class="modal">
+        <div class="close-btn" id="close-btn">&times;</div>
+        <h2>Emergency Siren</h2>
+        <p>Activate the siren during emergencies.</p>
+        <button id="start-btn">Start Siren</button>
+        <button id="stop-btn">Stop Siren</button>
+      </div>
+    </div>
+
+    <!-- Hidden Audio Element (set to loop) -->
+    <audio id="siren-audio" src="./resources/siren.wav" loop></audio>
+
+    <footer>
+      <p>&copy; 2025 Women’s Safety & Wellness Hub. All Rights Reserved.</p>
+    </footer>
+    <script>
+      // Simulated login state (set to false for not logged in, true for logged in)
+      let isLoggedIn = true; // Change this manually to simulate login
+
+      // Attach event listeners to all restricted feature cards
+      document.querySelectorAll(".restricted-card").forEach((card) => {
+        card.addEventListener("click", function (event) {
+          if (!isLoggedIn) {
+            event.preventDefault(); // Prevent navigation if not logged in
+            alert("Please log in to access this feature.");
+            // Optionally, redirect the user to the login page
+            window.location.href = "loginPage.html";
+          }
+          // If logged in, navigation continues normally
+        });
+      });
+    </script>
+    <script src="./siren.js"></script>
+  </body>
+</html>
